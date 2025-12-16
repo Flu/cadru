@@ -1,0 +1,4 @@
+(library
+ (name cadru)
+ (libraries yaml yojson ppx_deriving_yojson)
+ (preprocess (pps ppx_deriving_yojson)))
