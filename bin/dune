@@ -1,5 +1,5 @@
 (executable
  (public_name cadru)
  (name main)
- (libraries cadru yaml yojson ppx_deriving_yojson)
+ (libraries cadru yaml yojson ppx_deriving_yojson ANSITerminal)
  (preprocess (pps ppx_deriving_yojson)))

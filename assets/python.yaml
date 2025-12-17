@@ -16,7 +16,9 @@ problems:
     difficulty: "Easy"
     description: |
       Write a function that takes an element and a space-separated list of elements on the next row. The elements can be integers or strings. The point of the exercise is to find the given element in the list and return the index at which you can find that element. If it occurs more than once, return the index of the first occurence.
-    hint: null
+      
+      It is guaranteed that the given list is not empty and that the search word is at least 1 character long.
+    hint: "You may want to use python's input() function to get input from the user. Then, you can convert it to an integer with int(), for example."
     reference: null
     test_cases:
       - input: |
@@ -52,7 +54,7 @@ problems:
     description: |
       Read a single line containing space-separated integers.
       Output the sum of all numbers.
-    hint: null
+    hint: "You can use the function int() to parse a string into an integer."
     reference: null
     test_cases:
       - input: |
