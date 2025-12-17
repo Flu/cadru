@@ -8,4 +8,3 @@ let () =
   | { version = false; exercise = ex; language = language } -> Interface.interface_loop ex language
   end;
   ();
-                                                     
