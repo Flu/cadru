@@ -3,10 +3,9 @@
 open Cadru
 
 let () =
-  match Config.read_config_from_yaml "./assets/python.yaml" with
-  | Ok config ->
-     Printf.printf "Config name: %s\n" config.name;
-     print_newline ();
-     List.iter (Interface.pretty_print_problem (List.length config.problems)) config.problems
-  | Error msg ->
-     Printf.eprintf "Error: %s\n" msg
+  begin match CommandLineOptions.parse_arguments () with
+  | { version = true; _ } -> print_string "v0.0.2"
+  | { version = false; exercise = ex; language = language } -> Interface.interface_loop ex language
+  end;
+  ();
+                                                     

@@ -96,4 +96,13 @@ let pretty_print_problem (length: int) (problem: Config.problem) =
      print_newline ();
   | None -> ()
   end;
-  print_test_cases problem.test_cases
+  print_test_cases problem.test_cases;
+  let _ = read_line () in ()
+
+let interface_loop exercise language =
+  match Config.read_config_from_yaml ("./assets/" ^ language ^ ".yaml") with
+  | Ok config ->
+     let exercise_list_length = List.length config.problems in
+     List.iter (pretty_print_problem exercise_list_length) (List.drop exercise config.problems);
+  | Error msg ->
+     Printf.eprintf "Error: %s\n" msg
