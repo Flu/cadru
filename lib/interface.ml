@@ -84,8 +84,16 @@ let print_info msg =
   print_string [blue; Bold] "→";
   print_string [] (" " ^ msg ^ "\n")
 
+(* Read the path to the solution from the user *)
+let read_path_from_user () =
+  try
+    print_string [] "Path to solution: ";
+    flush stdout;
+    Some (read_line ())
+  with End_of_file -> None
+
 (* Prettyprint a single problem from the data set *)
-let pretty_print_problem (length: int) (problem: Config.problem) =
+let show_problem (length: int) (problem: Config.problem) =
   erase Screen;
   set_cursor 1 1;
   print_header ~current:problem.id ~total:length problem.title;
@@ -97,12 +105,16 @@ let pretty_print_problem (length: int) (problem: Config.problem) =
   | None -> ()
   end;
   print_test_cases problem.test_cases;
-  let _ = read_line () in ()
+  begin match read_path_from_user () with
+  | Some path -> printf [] "You are being judged for your solution %s" path
+  | None -> print_string [] "No path received, skipping"
+  end
+  
 
 let interface_loop exercise language =
   match Config.read_config_from_yaml ("./assets/" ^ language ^ ".yaml") with
   | Ok config ->
      let exercise_list_length = List.length config.problems in
-     List.iter (pretty_print_problem exercise_list_length) (List.drop exercise config.problems);
+     List.iter (show_problem exercise_list_length) (List.drop exercise config.problems);
   | Error msg ->
      Printf.eprintf "Error: %s\n" msg
