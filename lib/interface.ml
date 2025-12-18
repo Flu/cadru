@@ -104,17 +104,35 @@ let show_problem (length: int) (problem: Config.problem) =
      print_newline ();
   | None -> ()
   end;
-  print_test_cases problem.test_cases;
-  begin match read_path_from_user () with
-  | Some path -> printf [] "You are being judged for your solution %s" path
-  | None -> print_string [] "No path received, skipping"
-  end
-  
+  print_test_cases problem.test_cases
 
-let interface_loop exercise language =
-  match Config.read_config_from_yaml ("./assets/" ^ language ^ ".yaml") with
-  | Ok config ->
-     let exercise_list_length = List.length config.problems in
-     List.iter (show_problem exercise_list_length) (List.drop exercise config.problems);
-  | Error msg ->
-     Printf.eprintf "Error: %s\n" msg
+let problemset_done language =
+  erase Screen;
+  set_cursor 1 1;
+  printf [Bold; red] "You are done with all the problems for %s, congratulations!" language
+
+let wait_for_enter () =
+  let _ = read_line () in
+  ()
+
+let get_config language =
+    match Config.read_config_from_yaml ("./assets/" ^ language ^ ".yaml") with
+    | Ok config -> config
+    | Error _ ->
+       Printf.eprintf "Config for language \"%s\" not found. Are you sure it exists?\n" language;
+       exit 1
+
+let interface_loop first_exercise language =
+  let rec iterate exercise_number problems =
+    match problems with
+    | [] -> problemset_done language
+    | hd :: tl ->
+       show_problem exercise_number hd;
+       begin match read_path_from_user () with
+       | Some path -> printf [] "You are being judged, for your solution is %s" path
+       | None -> print_string [] "No solution given." end;
+       (* Give solution to judge and dome something with the result *)
+       wait_for_enter ();
+       iterate (exercise_number + 1) tl
+  in
+  iterate first_exercise (List.drop first_exercise (get_config language).problems)

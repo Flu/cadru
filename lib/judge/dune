@@ -1,0 +1,3 @@
+(library
+  (name judge)
+  (libraries my_lib))

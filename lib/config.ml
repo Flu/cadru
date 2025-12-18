@@ -41,18 +41,23 @@ let rec yaml_to_yojson = function
   | `O assoc -> `Assoc (List.map (fun (k, v) -> (k, yaml_to_yojson v)) assoc)
 
 let read_file filename =
-  let ic = open_in filename in
-  let len = in_channel_length ic in
-  let contents = really_input_string ic len in
-  close_in ic;
-  contents
+  try
+    let ic = open_in filename in
+    let len = in_channel_length ic in
+    let contents = really_input_string ic len in
+    close_in ic;
+    Ok contents
+  with
+  | Sys_error msg -> Error ("Failed to read file: " ^ msg)
 
 let read_config_from_yaml filename =
-  let yaml_string = read_file filename in
-  match Yaml.of_string yaml_string with
-  | Ok yaml_value ->
-      let json = yaml_to_yojson yaml_value in
-      (match config_of_yojson json with
-      | Ok config -> Ok config
-      | Error msg -> Error ("Failed to parse config: " ^ msg))
-  | Error (`Msg msg) -> Error ("Failed to parse YAML: " ^ msg)
+  match read_file filename with
+  | Error msg -> Error msg
+  | Ok yaml_string ->
+      (match Yaml.of_string yaml_string with
+      | Ok yaml_value ->
+          let json = yaml_to_yojson yaml_value in
+          (match config_of_yojson json with
+          | Ok config -> Ok config
+          | Error msg -> Error ("Failed to parse config: " ^ msg))
+      | Error (`Msg msg) -> Error ("Failed to parse YAML: " ^ msg))
