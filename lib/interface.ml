@@ -109,7 +109,7 @@ let show_problem (length: int) (problem: Config.problem) =
 let problemset_done language =
   erase Screen;
   set_cursor 1 1;
-  printf [Bold; red] "You are done with all the problems for %s, congratulations!" language
+  printf [Bold; red] "You are done with all the problems for %s, congratulations!\n" language
 
 let wait_for_enter () =
   let _ = read_line () in
@@ -128,16 +128,32 @@ let interface_loop first_exercise language =
   let rec iterate exercise_number problems =
     match problems with
     | [] -> problemset_done language
-    | hd :: tl ->
+    | hd :: tl as t ->
+       wait_for_enter ();
        show_problem exercise_number hd;
        begin match read_path_from_user () with
        | Some path ->
-          printf [] "You are being judged, for your solution is %s" path;
-          let judge_results = Judge.run language_config path in
-          printf [] "The results were %s" (string_of_bool judge_results.success)
+          printf [] "You are being judged, for your solution is %s\n" path;
+          begin match Judge.run language_config path with
+          | { error_type = Some SourceNotFoundError; _ } -> 
+             printf [] "The source file was not found\n";
+             iterate exercise_number t
+          | { error_type = Some CompilationError; _ } ->
+             printf [] "Compilation error\n";
+             iterate exercise_number t
+          | { error_type = Some RuntimeError; _ } ->
+             printf [] "Runtime error\n";
+             iterate exercise_number t
+          | { error_type = Some FailedTest; _ } ->
+             printf [] "Runtime error\n";
+             iterate exercise_number t
+          | { success = true; _} ->
+             printf [] "All good! You can proceed to the next exercise\n";
+          | _ ->
+             eprintf [] "Unreachable, something is fucked up"
+          end;
        | None -> print_string [] "No solution given."
        end;
-       wait_for_enter ();
        iterate (exercise_number + 1) tl
   in
   iterate first_exercise problems_after_skip

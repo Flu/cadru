@@ -1,4 +1,5 @@
 type judge_error =
+  | SourceNotFoundError
   | CompilationError
   | RuntimeError
   | FailedTest

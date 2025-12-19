@@ -25,7 +25,7 @@ type config = {
   run_command : string option;
   class_name : string option;
   problems : problem list;
-  source_file: string option;
+  source_file: string;
   executable_file: string option;
 }
 [@@deriving yojson]
