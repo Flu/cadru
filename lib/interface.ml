@@ -123,16 +123,21 @@ let get_config language =
        exit 1
 
 let interface_loop first_exercise language =
+  let language_config = get_config language in
+  let problems_after_skip = List.drop first_exercise language_config.problems in
   let rec iterate exercise_number problems =
     match problems with
     | [] -> problemset_done language
     | hd :: tl ->
        show_problem exercise_number hd;
        begin match read_path_from_user () with
-       | Some path -> printf [] "You are being judged, for your solution is %s" path
-       | None -> print_string [] "No solution given." end;
-       (* Give solution to judge and dome something with the result *)
+       | Some path ->
+          printf [] "You are being judged, for your solution is %s" path;
+          let judge_results = Judge.run language_config path in
+          printf [] "The results were %s" (string_of_bool judge_results.success)
+       | None -> print_string [] "No solution given."
+       end;
        wait_for_enter ();
        iterate (exercise_number + 1) tl
   in
-  iterate first_exercise (List.drop first_exercise (get_config language).problems)
+  iterate first_exercise problems_after_skip

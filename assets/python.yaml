@@ -9,6 +9,8 @@ check_exists_args:
   - "--version"
 run_command: null
 class_name: null
+source_file: "main.py"
+executable_file: null
 
 problems:
   - id: 1
