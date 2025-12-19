@@ -21,7 +21,7 @@
  (name cadru)
  (synopsis "A short synopsis")
  (description "A longer description")
- (depends ocaml yojson yaml ppx_deriving_yojson ANSITerminal)
+ (depends ANSITerminal bos ocaml ppx_deriving_yojson yaml yojson)
  (tags
   ("add topics" "to describe" your project)))
 

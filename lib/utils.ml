@@ -1,4 +1,5 @@
 open Judge_sig
+open Bos
 
 let file_exists = Sys.file_exists
 
@@ -27,10 +28,26 @@ let create_source_file tempdir filename =
   close_out oc;
   new_path   
 
+let return_compiler_not_found () =
+  {
+    success = false;
+    failed_test_index = None;
+    is_failed_test_hidden = None;
+    error_type = Some CompilerNotFound;
+  }
+
+let return_interpreter_not_found () =
+  {
+    success = false;
+    failed_test_index = None;
+    is_failed_test_hidden = None;
+    error_type = Some InterpreterNotFound;
+  }
+
 let return_compilation_error () =
   {
       success = false;
-      last_failed_test = None;
+      failed_test_index = None;
       is_failed_test_hidden = None;
       error_type = Some CompilationError;
   }
@@ -38,7 +55,7 @@ let return_compilation_error () =
 let return_runtime_error () =
   {
       success = false;
-      last_failed_test = None;
+      failed_test_index = None;
       is_failed_test_hidden = None;
       error_type = Some RuntimeError;
   }
@@ -46,7 +63,7 @@ let return_runtime_error () =
 let return_failed_test_error hidden which =
   {
       success = false;
-      last_failed_test = which;
+      failed_test_index = which;
       is_failed_test_hidden = hidden;
       error_type = Some FailedTest;
   }
@@ -54,7 +71,16 @@ let return_failed_test_error hidden which =
 let return_judge_success () =
   {
       success = true;
-      last_failed_test = None;
+      failed_test_index = None;
       is_failed_test_hidden = None;
       error_type = None;
   }
+
+let run_with_input ~(cmd : Cmd.t) ~(input : string)
+  : (string, Rresult.R.msg) result =
+  let run_out =
+    OS.Cmd.run_io
+      cmd
+      (OS.Cmd.in_string input)
+  in
+  OS.Cmd.to_string run_out

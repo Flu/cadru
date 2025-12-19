@@ -123,6 +123,24 @@ let get_config language =
        Printf.eprintf "Config for language \"%s\" not found. Are you sure it exists?\n" language;
        exit 1
 
+let judge_error_formatted_message (error : Judge_sig.judge_result) : string =
+  match error with
+  | { success = true; _} -> "All tests passed!"
+  | { success = false; error_type = Some CompilerNotFound; _ } -> "No suitable candidate found to compile the solution"
+  | { success = false; error_type = Some InterpreterNotFound; _ } -> "No suitable candidate found to interpret the solution"
+  | { success = false; error_type = Some CompilationError; _ } -> "Compilation error"
+  | { success = false;
+      error_type = Some FailedTest;
+      is_failed_test_hidden = Some false;
+      failed_test_index = Some n } ->
+     Printf.sprintf "Failed test %d" (n + 1)
+  | { success = false;
+      error_type = Some FailedTest;
+      is_failed_test_hidden = Some true;
+      failed_test_index = Some n } ->
+     Printf.sprintf "Failed hidden test %d" (n + 1)
+  | _ -> "Unreachable"
+
 let rec interface_loop ~language_name:language ?(current_index=0) =
   let lang_config = get_config language in
   let problems = Array.of_list lang_config.problems in
@@ -148,7 +166,11 @@ let rec interface_loop ~language_name:language ?(current_index=0) =
     end
   else begin
       (* TODO: judge the solution here and move on to the next problem if ok *)
-      printf [] "something\n";
+      let judge_result = Judge.run lang_config problem (Option.get solution_path) in
+      printf [] "%s\n" (judge_error_formatted_message judge_result);
       wait_for_enter ();
-      interface_loop ~language_name:language ~current_index:(current_index+1)
+      if judge_result.success = false then
+        interface_loop ~language_name:language ~current_index:current_index
+      else
+        interface_loop ~language_name:language ~current_index:(current_index+1)
     end
