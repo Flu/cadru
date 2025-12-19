@@ -13,7 +13,7 @@ source_file: "main.py"
 executable_file: null
 
 problems:
-  - id: 1
+  - id: 0
     title: "Find element in list"
     difficulty: "Easy"
     description: |
@@ -50,7 +50,7 @@ problems:
         output: |
           13
           
-  - id: 2
+  - id: 1
     title: "Sum of numbers"
     difficulty: "Easy"
     description: |
@@ -73,7 +73,7 @@ problems:
         output: |
           0
           
-  - id: 3
+  - id: 2
     title: "Count words"
     difficulty: "Easy"
     description: |
@@ -96,7 +96,7 @@ problems:
         output: |
           0
           
-  - id: 4
+  - id: 3
     title: "Convert to uppercase"
     difficulty: "Easy"
     description: |
@@ -118,7 +118,7 @@ problems:
         output: |
           ALREADY UPPER
           
-  - id: 5
+  - id: 4
     title: "Reverse words"
     difficulty: "Easy"
     description: |

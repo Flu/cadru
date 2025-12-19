@@ -8,11 +8,8 @@ open Config
   (* } *)
 
 let run config solution_path =
-  if not (Utils.check_if_file solution_path) then
-    Utils.return_source_not_found_error ()
-  else
-    let temp_dir = Utils.make_temp_dir () in
-    let temp_file = Utils.create_source_file temp_dir config.source_file in
-    Utils.copy_source_file_contents solution_path temp_file;
-    Utils.return_judge_success ()
+  let temp_dir = Utils.make_temp_dir () in
+  let temp_file = Utils.create_source_file temp_dir config.source_file in
+  Utils.copy_source_file_contents solution_path temp_file;
+  Utils.return_judge_success ()
   

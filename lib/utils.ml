@@ -27,14 +27,6 @@ let create_source_file tempdir filename =
   close_out oc;
   new_path   
 
-let return_source_not_found_error () =
-  {
-      success = false;
-      last_failed_test = None;
-      is_failed_test_hidden = None;
-      error_type = Some SourceNotFoundError;
-  }
-
 let return_compilation_error () =
   {
       success = false;

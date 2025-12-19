@@ -87,7 +87,7 @@ let print_info msg =
 (* Read the path to the solution from the user *)
 let read_path_from_user () =
   try
-    print_string [] "Path to solution: ";
+    print_string [] "Path to solution file: ";
     flush stdout;
     Some (read_line ())
   with End_of_file -> None
@@ -112,6 +112,7 @@ let problemset_done language =
   printf [Bold; red] "You are done with all the problems for %s, congratulations!\n" language
 
 let wait_for_enter () =
+  printf [] "Press Enter to continue.\n";
   let _ = read_line () in
   ()
 
@@ -122,38 +123,32 @@ let get_config language =
        Printf.eprintf "Config for language \"%s\" not found. Are you sure it exists?\n" language;
        exit 1
 
-let interface_loop first_exercise language =
-  let language_config = get_config language in
-  let problems_after_skip = List.drop first_exercise language_config.problems in
-  let rec iterate exercise_number problems =
-    match problems with
-    | [] -> problemset_done language
-    | hd :: tl as t ->
-       wait_for_enter ();
-       show_problem exercise_number hd;
-       begin match read_path_from_user () with
-       | Some path ->
-          printf [] "You are being judged, for your solution is %s\n" path;
-          begin match Judge.run language_config path with
-          | { error_type = Some SourceNotFoundError; _ } -> 
-             printf [] "The source file was not found\n";
-             iterate exercise_number t
-          | { error_type = Some CompilationError; _ } ->
-             printf [] "Compilation error\n";
-             iterate exercise_number t
-          | { error_type = Some RuntimeError; _ } ->
-             printf [] "Runtime error\n";
-             iterate exercise_number t
-          | { error_type = Some FailedTest; _ } ->
-             printf [] "Runtime error\n";
-             iterate exercise_number t
-          | { success = true; _} ->
-             printf [] "All good! You can proceed to the next exercise\n";
-          | _ ->
-             eprintf [] "Unreachable, something is fucked up"
-          end;
-       | None -> print_string [] "No solution given."
-       end;
-       iterate (exercise_number + 1) tl
-  in
-  iterate first_exercise problems_after_skip
+let rec interface_loop ~language_name:language ?(current_index=0) =
+  let lang_config = get_config language in
+  let problems = Array.of_list lang_config.problems in
+  let num_problems = Array.length problems in
+
+  if current_index = num_problems - 1 then
+    printf [Bold; green] "You've solved all the available problems for %s. Congratulations!\n" language;
+  
+  let problem = problems.(current_index) in
+
+  show_problem (num_problems - 1) problem;
+  let solution_path = read_path_from_user () in
+
+  if solution_path = None then begin
+      eprintf [] "EOF reached. Exiting.";
+      exit 2
+    end;
+  
+  if not (Utils.check_if_file (Option.get solution_path)) then begin
+      printf [] "File does not exist, is inaccessible or is a directory.\n";
+      wait_for_enter ();
+      interface_loop ~language_name:language ~current_index:current_index
+    end
+  else begin
+      (* TODO: judge the solution here and move on to the next problem if ok *)
+      printf [] "something\n";
+      wait_for_enter ();
+      interface_loop ~language_name:language ~current_index:(current_index+1)
+    end
