@@ -6,7 +6,7 @@ let check_compilers compiler_list arg_list =
   let compiler_array = Array.of_list compiler_list in
   let arg_array = Array.of_list arg_list in
   let rec aux index found =
-    if index == Array.length compiler_array - 1 then
+    if index == Array.length compiler_array then
       found
     else
       let cmd = Cmd.v compiler_array.(index) % arg_array.(index) in
