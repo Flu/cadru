@@ -1,0 +1,73 @@
+name: "Haskell"
+interpreted: true
+compiler:
+  - "runhaskell"
+  - "runghc"
+compiler_args: null
+check_exists_args:
+  - "--version"
+  - "--version"
+run_command: null
+class_name: null
+source_file: "Main.hs"
+executable_file: null
+problems:
+  - id: 0
+    title: "Find element in list"
+    difficulty: "Easy"
+    description: |
+      Write a function that takes an element and a space-separated list of elements on the next row. The elements can be integers or strings. The point of the exercise is to find the given element in the list and return the index at which you can find that element. If it occurs more than once, return the index of the first occurence.
+      
+      It is guaranteed that the given list is not empty and that the search word is at least 1 character long.
+    hint: "Use getLine to read input. The words function splits a string by spaces. Use elemIndex from Data.List to find the index."
+    reference: null
+    test_cases:
+      - input: |
+          1
+          5 6 2 3 1 2 4 5 5
+        output: |
+          4
+      - input: |
+          bucharest
+          berlin bucharest paris sofia stockholm amsterdam bucharest copenhagen london
+        output: |
+          1
+    hidden_test_cases:
+      - input: |
+          bucharest
+          berlin paris cape_town bucharest paris sofia stockholm oslo amsterdam bucharest copenhagen london bratislava budapest
+        output: |
+          3
+      - input: |
+          5
+          5
+        output: |
+          0
+      - input: |
+          98
+          123 -665 12 90 3 102456 789 -344 0 91 -53 -51 -3016422 98
+        output: |
+          13
+          
+  - id: 1
+    title: "Sum of numbers"
+    difficulty: "Easy"
+    description: |
+      Read a single line containing space-separated integers.
+      Output the sum of all numbers.
+    hint: "Use words to split the string and map read over the list to convert strings to integers."
+    reference: null
+    test_cases:
+      - input: |
+          1 2 3 4 5
+        output: |
+          15
+      - input: |
+          -3 10 5
+        output: |
+          12
+    hidden_test_cases:
+      - input: |
+          0 0 0 0
+        output: |
+          0
