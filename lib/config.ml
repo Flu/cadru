@@ -20,7 +20,7 @@ type config = {
   name : string;
   interpreted : bool;
   compiler : string list;
-  compiler_args : string option;
+  compiler_args : string list;
   check_exists_args : string list;
   run_command : string option;
   class_name : string option;

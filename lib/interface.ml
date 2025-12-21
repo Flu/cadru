@@ -147,10 +147,10 @@ let rec interface_loop ~language_name:language ?(current_index=0) =
   let lang_config = get_config language in
   let problems = Array.of_list lang_config.problems in
   let num_problems = Array.length problems in
-
-  if current_index = num_problems - 1 then
-    printf [Bold; green] "You've solved all the available problems for %s. Congratulations!\n" language;
-  
+  if current_index >= num_problems then begin
+      printf [Bold; green] "You've solved all the available problems for %s. Congratulations!\n" language;
+      exit 0
+  end;
   let problem = problems.(current_index) in
 
   show_problem (num_problems - 1) problem;
@@ -167,7 +167,6 @@ let rec interface_loop ~language_name:language ?(current_index=0) =
       interface_loop ~language_name:language ~current_index:current_index
     end
   else begin
-      (* TODO: judge the solution here and move on to the next problem if ok *)
       let judge_result = Judge.run lang_config problem (Option.get solution_path) in
       printf [] "%s\n" (judge_error_formatted_message judge_result);
       wait_for_enter ();

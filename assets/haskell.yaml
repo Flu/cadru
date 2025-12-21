@@ -3,7 +3,9 @@ interpreted: true
 compiler:
   - "runhaskell"
   - "runghc"
-compiler_args: null
+compiler_args:
+  - ""
+  - ""
 check_exists_args:
   - "--version"
   - "--version"

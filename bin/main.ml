@@ -1,5 +1,3 @@
-[@@@ocaml.warning "-32-37"]
-
 open Cadru
 
 let () =
