@@ -1,4 +1,4 @@
 (library
  (name cadru)
- (libraries bos yaml yojson ppx_deriving_yojson ANSITerminal)
+ (libraries ANSITerminal bos ppx_deriving_yojson xdg yaml yojson)
  (preprocess (pps ppx_deriving_yojson)))

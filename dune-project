@@ -7,22 +7,18 @@
 (generate_opam_files true)
 
 (source
- (github username/reponame))
+ (github Flu/cadru))
 
-(authors "Author Name <author@example.com>")
+(authors "Adrian Fluturel <fluturel.adrian@gmail.com>")
 
-(maintainers "Maintainer Name <maintainer@example.com>")
+(maintainers "Adrian Fluturel <fluturel.adrian@gmail.com>")
 
-(license LICENSE)
-
-(documentation https://url/to/documentation)
+(license Unlicense)
 
 (package
  (name cadru)
- (synopsis "A short synopsis")
- (description "A longer description")
- (depends ANSITerminal bos ocaml ppx_deriving_yojson yaml yojson)
+ (synopsis "Terminal game for learning programming languages")
+ (description "A game you can run offline that teaches you different programming languages through exercises, taking the scenic view on your way to mastering said language.")
+ (depends xdg ANSITerminal bos ocaml ppx_deriving_yojson yaml yojson)
  (tags
-  ("add topics" "to describe" your project)))
-
-; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
+  (learning programming offline hackable game)))

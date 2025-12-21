@@ -2,6 +2,10 @@ open Bos
 
 let file_exists = Sys.file_exists
 
+let state_dir () =
+  let xdg = Xdg.create ~env:Sys.getenv_opt () in
+  Xdg.state_dir xdg
+
 let read_file filename =
   try
     let ic = open_in filename in
