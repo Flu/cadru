@@ -42,18 +42,8 @@ let rec yaml_to_yojson = function
   | `A lst -> `List (List.map yaml_to_yojson lst)
   | `O assoc -> `Assoc (List.map (fun (k, v) -> (k, yaml_to_yojson v)) assoc)
 
-let read_file filename =
-  try
-    let ic = open_in filename in
-    let len = in_channel_length ic in
-    let contents = really_input_string ic len in
-    close_in ic;
-    Ok contents
-  with
-  | Sys_error msg -> Error ("Failed to read file: " ^ msg)
-
 let read_config_from_yaml filename =
-  match read_file filename with
+  match Utils.read_file filename with
   | Error msg -> Error msg
   | Ok yaml_string ->
       (match Yaml.of_string yaml_string with

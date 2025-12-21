@@ -1,7 +1,16 @@
-open Judge_sig
 open Bos
 
 let file_exists = Sys.file_exists
+
+let read_file filename =
+  try
+    let ic = open_in filename in
+    let len = in_channel_length ic in
+    let contents = really_input_string ic len in
+    close_in ic;
+    Ok contents
+  with
+  | Sys_error msg -> Error ("Failed to read file: " ^ msg)
 
 let check_if_file path =
   if file_exists path then
@@ -12,8 +21,8 @@ let check_if_file path =
   else
     false
 
-let make_temp_dir () =
-  Filename.temp_dir "cadru" ""
+let make_temp_dir ?(prefix="cadru") () =
+  Filename.temp_dir prefix ""
 
 let copy_source_file_contents src dest =
   let content =
@@ -27,54 +36,6 @@ let create_source_file tempdir filename =
   in
   close_out oc;
   new_path   
-
-let return_compiler_not_found () =
-  {
-    success = false;
-    failed_test_index = None;
-    is_failed_test_hidden = None;
-    error_type = Some CompilerNotFound;
-  }
-
-let return_interpreter_not_found () =
-  {
-    success = false;
-    failed_test_index = None;
-    is_failed_test_hidden = None;
-    error_type = Some InterpreterNotFound;
-  }
-
-let return_compilation_error () =
-  {
-      success = false;
-      failed_test_index = None;
-      is_failed_test_hidden = None;
-      error_type = Some CompilationError;
-  }
-
-let return_runtime_error () =
-  {
-      success = false;
-      failed_test_index = None;
-      is_failed_test_hidden = None;
-      error_type = Some RuntimeError;
-  }
-
-let return_failed_test_error hidden which =
-  {
-      success = false;
-      failed_test_index = which;
-      is_failed_test_hidden = hidden;
-      error_type = Some FailedTest;
-  }
-
-let return_judge_success () =
-  {
-      success = true;
-      failed_test_index = None;
-      is_failed_test_hidden = None;
-      error_type = None;
-  }
 
 let run_with_input ~(cmd : Cmd.t) ~(input : string)
   : (string, Rresult.R.msg) result =

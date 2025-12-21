@@ -37,7 +37,7 @@ let rec test_solution ?(index=0) interpreter temp_file test_cases : (bool * int)
 let run config problem solution_path =
   let interpreters = check_compilers config.compiler config.check_exists_args in
   if List.length interpreters = 0 then
-    Utils.return_interpreter_not_found ()
+    Judge_sig.return_interpreter_not_found ()
   else
     let interpreter = List.nth interpreters 0 in 
     
@@ -49,8 +49,8 @@ let run config problem solution_path =
     let hidden_test_cases = Array.of_list problem.hidden_test_cases in
     
     match test_solution interpreter temp_file test_cases with
-    | (false, n) -> Utils.return_failed_test_error (Some false) (Some n)
+    | (false, n) -> Judge_sig.return_failed_test_error (Some false) (Some n)
     | _ -> begin match test_solution interpreter temp_file hidden_test_cases with
-           | (false, n) -> Utils.return_failed_test_error (Some true) (Some n)
-           | _ -> Utils.return_judge_success ()
+           | (false, n) -> Judge_sig.return_failed_test_error (Some true) (Some n)
+           | _ -> Judge_sig.return_judge_success ()
            end;
