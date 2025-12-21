@@ -117,11 +117,13 @@ let wait_for_enter () =
   ()
 
 let get_config language =
-    match Config.read_config_from_yaml ("./assets/" ^ language ^ ".yaml") with
-    | Ok config -> config
-    | Error _ ->
-       Printf.eprintf "Config for language \"%s\" not found. Are you sure it exists?\n" language;
-       exit 1
+  let assets_directory = Utils.assets_dir () in
+  let language_config_path = (Filename.concat assets_directory language) ^ ".yaml" in
+  match Config.read_config_from_yaml language_config_path with
+  | Ok config -> config
+  | Error _ ->
+     Printf.eprintf "Config for language \"%s\" not found. Are you sure it exists?\n" language;
+     exit 1
 
 let judge_error_formatted_message (error : Judge_sig.judge_result) : string =
   match error with

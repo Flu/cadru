@@ -1,10 +1,33 @@
-open Bos
-
 let file_exists = Sys.file_exists
 
 let state_dir () =
   let xdg = Xdg.create ~env:Sys.getenv_opt () in
-  Xdg.state_dir xdg
+  Filename.concat (Xdg.state_dir xdg) "cadru"
+
+let session_file () =
+  Filename.concat (state_dir ()) "session.json"
+
+let dirname path =
+  let d = Filename.dirname path in
+  if d = path then None else Some d
+
+let assets_dir () =
+  let exe = Sys.executable_name in
+  let is_existing_dir dir = Sys.file_exists dir && Sys.is_directory dir in
+  let rec aux dir_path =
+    match dirname dir_path with
+    | None -> None
+    | Some parent_dir ->
+       begin
+         if Filename.concat parent_dir "share/cadru/assets" |> is_existing_dir then
+           Some (Filename.concat parent_dir "share/cadru/assets")
+        else
+          aux parent_dir
+       end
+  in
+  match aux exe with
+  | Some path -> path
+  | None -> "./assets"
 
 let read_file filename =
   try
@@ -41,8 +64,8 @@ let create_source_file tempdir filename =
   close_out oc;
   new_path   
 
-let run_with_input ~(cmd : Cmd.t) ~(input : string)
-  : (string, Rresult.R.msg) result =
+let run_with_input ~cmd ~input =
+  let open Bos in
   let run_out =
     OS.Cmd.run_io
       cmd

@@ -19,6 +19,6 @@
  (name cadru)
  (synopsis "Terminal game for learning programming languages")
  (description "A game you can run offline that teaches you different programming languages through exercises, taking the scenic view on your way to mastering said language.")
- (depends xdg ANSITerminal bos ocaml ppx_deriving_yojson yaml yojson)
+ (depends ANSITerminal bos ocaml ppx_deriving_yojson xdg yaml yojson)
  (tags
   (learning programming offline hackable game)))

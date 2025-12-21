@@ -12,11 +12,11 @@ homepage: "https://github.com/Flu/cadru"
 bug-reports: "https://github.com/Flu/cadru/issues"
 depends: [
   "dune" {>= "3.20"}
-  "xdg"
   "ANSITerminal"
   "bos"
   "ocaml"
   "ppx_deriving_yojson"
+  "xdg"
   "yaml"
   "yojson"
   "odoc" {with-doc}
