@@ -125,7 +125,7 @@ let get_config language =
      Printf.eprintf "Config for language \"%s\" not found. Are you sure it exists?\n" language;
      exit 1
 
-let judge_error_formatted_message (error : Judge_sig.judge_result) : string =
+let judge_error_formatted_message (error : Judge.judge_result) : string =
   match error with
   | { success = true; _} -> "All tests passed!"
   | { success = false; error_type = Some CompilerNotFound; _ } -> "No suitable candidate found to compile the solution"
@@ -167,7 +167,7 @@ let rec interface_loop ~language_name:language ?(current_index=0) =
       interface_loop ~language_name:language ~current_index:current_index
     end
   else begin
-      let judge_result = Judge.run lang_config problem (Option.get solution_path) in
+      let judge_result = Judge.run_judge lang_config problem (Option.get solution_path) in
       printf [] "%s\n" (judge_error_formatted_message judge_result);
       wait_for_enter ();
       if judge_result.success = false then
