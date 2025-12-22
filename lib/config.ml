@@ -34,10 +34,10 @@ let rec yaml_to_yojson = function
   | `Null -> `Null
   | `Bool b -> `Bool b
   | `Float f -> 
-      if Float.is_integer f then
-        `Int (int_of_float f)
-      else
-        `Float f
+     if Float.is_integer f then
+       `Int (int_of_float f)
+     else
+       `Float f
   | `String s -> `String s
   | `A lst -> `List (List.map yaml_to_yojson lst)
   | `O assoc -> `Assoc (List.map (fun (k, v) -> (k, yaml_to_yojson v)) assoc)

@@ -126,7 +126,7 @@ let get_config language =
      exit 1
 
 let judge_error_formatted_message (error : Judge.judge_result) : string =
-  match error with
+  begin match error with
   | { success = true; _} -> "All tests passed!"
   | { success = false; error_type = Some CompilerNotFound; _ } -> "No suitable candidate found to compile the solution"
   | { success = false; error_type = Some InterpreterNotFound; _ } -> "No suitable candidate found to interpret the solution"
@@ -135,27 +135,31 @@ let judge_error_formatted_message (error : Judge.judge_result) : string =
       error_type = Some FailedTest;
       is_failed_test_hidden = Some false;
       failed_test_index = Some n } ->
-     Printf.sprintf "Failed test %d" (n + 1)
-  | { success = false;
-      error_type = Some FailedTest;
-      is_failed_test_hidden = Some true;
-      failed_test_index = Some n } ->
-     Printf.sprintf "Failed hidden test %d" (n + 1)
-  | _ -> "Unreachable"
+      Printf.sprintf "Failed test %d" (n + 1)
+    | { success = false;
+        error_type = Some FailedTest;
+        is_failed_test_hidden = Some true;
+        failed_test_index = Some n } ->
+       Printf.sprintf "Failed hidden test %d" (n + 1)
+    | _ -> "Unreachable"
+  end
 
-let rec interface_loop ~language_name:language ?(current_index=0) =
-  let lang_config = get_config language in
-  let problems = Array.of_list lang_config.problems in
+let rec interface_loop ~language_name:language ~lang_config:config ?(current_index=0) =
+  (* TODO: Find out why removing the following line makes the config record unaccessible on the next line *)
+  let c = get_config language in
+  let problems = Array.of_list c.problems in
   let num_problems = Array.length problems in
+  
   if current_index >= num_problems then begin
+      Session.set_language_as_finished language;
       printf [Bold; green] "You've solved all the available problems for %s. Congratulations!\n" language;
       exit 0
   end;
   let problem = problems.(current_index) in
-
+  
   show_problem (num_problems - 1) problem;
   let solution_path = read_path_from_user () in
-
+  
   if solution_path = None then begin
       eprintf [] "EOF reached. Exiting.";
       exit 2
@@ -164,14 +168,22 @@ let rec interface_loop ~language_name:language ?(current_index=0) =
   if not (Utils.check_if_file (Option.get solution_path)) then begin
       printf [] "File does not exist, is inaccessible or is a directory.\n";
       wait_for_enter ();
-      interface_loop ~language_name:language ~current_index:current_index
+      interface_loop ~language_name:language ~lang_config:config ~current_index:current_index
     end
   else begin
-      let judge_result = Judge.run_judge lang_config problem (Option.get solution_path) in
+      let judge_result = Judge.run_judge config problem (Option.get solution_path) in
+      if judge_result.success = true then begin
+        Session.set_last_problem language current_index;
+      end;
       printf [] "%s\n" (judge_error_formatted_message judge_result);
       wait_for_enter ();
       if judge_result.success = false then
-        interface_loop ~language_name:language ~current_index:current_index
+        interface_loop ~language_name:language ~lang_config:config ~current_index:current_index
       else
-        interface_loop ~language_name:language ~current_index:(current_index+1)
+        interface_loop ~language_name:language ~lang_config:config ~current_index:(current_index+1)
     end
+
+let interface_main ~language_name:language =
+  let lang_config = get_config language in
+  let session = Session.load_language_session language in
+  interface_loop ~language_name:language ~lang_config:lang_config ~current_index:(session.last_problem_solved+1)
