@@ -1,4 +1,4 @@
-# 🎯 Cadru
+# Cadru
 
 **Cadru** (Romanian for "framework") is a command-line tool for practicing programming problems across multiple languages. It's your own personal coding judge that helps you learn new languages or practice your current ones - if you can't solve a problem, you're not moving forward!
 
@@ -8,66 +8,69 @@ Cadru presents you with a series of programming exercises. You solve them, submi
 
 Think of it as a structured way to learn new programming languages or brush up on the basics, one problem at a time.
 
-## 🚀 Getting Started
+## 🚀 Getting started
 
-### Install OCaml Toolchain
+### Install the OCaml toolchain
 
 First, you'll need to install OCaml, Dune, and its package manager `opam`. Follow the official guide here:
 
-👉 [OCaml Installation Guide](https://ocaml.org/install)
+[OCaml Installation Guide](https://ocaml.org/install)
 
-### Install Dependencies
+### Install dependencies
 
-Clone this repository and let Dune handle the dependencies:
+Clone this repository and install the dependencies with Dune:
 
 ```bash
-git clone <your-repo-url>
+git clone git@github.com:Flu/cadru.git
 cd cadru
 opam install . --deps-only
 ```
 
 This will install all required OCaml libraries (ANSITerminal, yaml, yojson, etc.).
 
-### Build the Project
+### Build the project
 
 ```bash
 dune build
 ```
 
-## 🎮 How to Use
+And, optionally, install it, so you can access it from anywhere:
 
-### Start from the first exercise:
+```bash
+dune install
+```
+
+## 🎮 How to use the application
+
+Select one of the languages the app offers and run the following command to start from the first exercise:
 
 ```bash
 dune exec cadru -- python
 ```
 
-### Start from a specific exercise:
-
-```bash
-dune exec cadru -- python --exercise 2
-```
+Once you start solving problems, the app will keep track where you left off. You can close it safely and come back later. You won't lose any progress.
 
 ### Available languages:
 
 Check the `./assets/` directory for available language configs. Out of the box, you should have:
 - `python.yaml`
 - `haskell.yaml`
-- (add more as you create them!)
 
-## 📝 How It Works
+NOTE: At the moment, they are placeholder problems to demonstrate how Cadru works and for testing. When we hit 1.0, the problems will look very differently and there will be many more per language.
 
-1. **Cadru shows you a problem** with its description and sample test cases
+## 📝 How it works
+
+1. **Cadru shows you a problem** with its description, hints, and sample test cases
 2. **You write your solution** in your favorite editor
 3. **Enter the path to your solution** when prompted (e.g., `./solution.py` or `/home/user/code/main.hs`)
-   - ⚠️ **Note:** No `~` expansion! Use relative paths (`./solution.py`) or absolute paths (`/home/user/solution.py`)
+   - ⚠️ **Note:** No `~` expansion yet! Use relative paths (`./solution.py`) or absolute paths (`/home/user/solution.py`)
 4. **Cadru judges your solution** against visible and hidden test cases
 5. **If you pass:** 🎉 Move on to the next problem!
 6. **If you fail:** 😅 Try again! You're stuck on this problem until you get it right
 
-Compilation errors, runtime errors, or failed test cases will all keep you on the current problem. No mercy, no shortcuts!
+Compilation errors, runtime errors, or failed test cases will all keep you on the current problem.
 
-## 🎨 Customizing Problems
+## 🎨 Customizing problems
 
 The problems are stored in `./assets/*.yaml` files. They're just YAML configs, so feel free to:
 - Modify existing problems
@@ -75,8 +78,8 @@ The problems are stored in `./assets/*.yaml` files. They're just YAML configs, s
 - Create entirely new problem sets
 - Change difficulty levels
 - Add your own test cases
-
-The problems included are **placeholders** to demonstrate how Cadru works. Make them your own!
+- After modifying any of the configs, if you chose to install Cadru, you will need to reinstall it
+NOTE: In the future, this won't be possible without resetting your progress.
 
 ## 🔧 Requirements
 
@@ -87,7 +90,7 @@ The problems included are **placeholders** to demonstrate how Cadru works. Make 
 - For C++: Install g++ or clang
 - And so on...
 
-Cadru will check if the required compiler/interpreter exists and report an error if it can't find one. No surprises! 🎪
+In the configs, Cadru has a list of possible compilers/interpreters. It checks that they are accessible before evaluating a solution and will complain if none of them are available.
 
 ## 🛠️ Troubleshooting
 
@@ -104,7 +107,7 @@ Cadru will check if the required compiler/interpreter exists and report an error
 
 ## Contributing
 
-Found a bug? Want to add a new language? Have a cool problem set? Contributions are welcome! This is a learning tool, so let's make it better together.
+Found a bug? Want to add a new language? Have a cool problem set? Contributions are welcome! This is a learning tool!
 
 ---
 
