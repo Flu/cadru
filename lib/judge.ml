@@ -80,7 +80,7 @@ let check_compilers compiler_list arg_list =
 
 let compile_source ~compiler:compiler ~compiler_args:args ~source_path:source_path ~executable:name =
   let open Bos.Cmd in
-  let cmd = v compiler % args % source_path in
+  let cmd = List.fold_left (%) (v compiler) (source_path :: (String.split_on_char ' ' args)) in
   match Utils.run_with_input ~cmd ~input:"" with
   | Ok _ ->
      Some (Runner.Binary {
